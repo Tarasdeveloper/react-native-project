@@ -1,6 +1,5 @@
 import {
   ImageBackground,
-  View,
   Keyboard,
   KeyboardAvoidingView,
   StyleSheet,
@@ -8,27 +7,52 @@ import {
   TextInput,
   TouchableOpacity,
   TouchableWithoutFeedback,
+  View,
 } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
 import bgImage from '../assets/images/photo_bg.png';
 import { useState } from 'react';
+import { AntDesign } from '@expo/vector-icons';
 // import { useNavigation } from '@react-navigation/native';
 
-const LoginScreen = () => {
+const RegistrationScreen = () => {
+  const [login, setLogin] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const [showPassword, setShowPassword] = useState(false);
   const [focusedInput, setFocusedInput] = useState(null);
-  // const navigation = useNavigation();
 
-  const handleLogin = () => {
-    console.log('Login:', {
+  //   const navigation = useNavigation();
+
+  const handleRegister = () => {
+    console.log('Register:', {
+      login: login,
       email: email,
       password: password,
     });
+    setLogin('');
     setEmail('');
     setPassword('');
-    // navigation.navigate('BottomNavigator');
+
+    navigation.navigate('BottomNavigator');
+  };
+
+  const pickImage = async () => {
+    try {
+      const { status } =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status === 'granted') {
+        const result = await ImagePicker.launchImageLibraryAsync({
+          mediaTypes: ImagePicker.MediaTypeOptions.All,
+          allowsEditing: true,
+          aspect: [4, 3],
+          quality: 1,
+        });
+      }
+    } catch (error) {
+      console.log('RegistrationScreen => ImagePicker: ', error.message);
+    }
   };
 
   return (
@@ -41,13 +65,35 @@ const LoginScreen = () => {
           <KeyboardAvoidingView
             style={styles.flexContainer}
             behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
-            keyboardVerticalOffset={-240}
+            keyboardVerticalOffset={-100}
           >
             <View style={{ ...styles.wrapContainer, ...styles.flexContainer }}>
-              <View style={styles.boxAuth}>
-                <Text style={styles.title}>Увійти</Text>
+              <View style={{ ...styles.boxAuth }}>
+                <View style={styles.avatarBox}>
+                  <TouchableOpacity style={styles.plusBtn} onPress={pickImage}>
+                    <AntDesign
+                      name="pluscircleo"
+                      style={styles.pluscircleo}
+                      size={25}
+                    />
+                  </TouchableOpacity>
+                </View>
+
+                <Text style={styles.title}>Реєстрація</Text>
 
                 <View style={styles.inputContainer}>
+                  <TextInput
+                    style={[
+                      styles.inputData,
+                      focusedInput === 'login' && styles.isFocus,
+                    ]}
+                    onFocus={() => setFocusedInput('login')}
+                    onBlur={() => setFocusedInput(null)}
+                    value={login}
+                    onChangeText={setLogin}
+                    placeholder="Логін"
+                  ></TextInput>
+
                   <TextInput
                     style={[
                       styles.inputData,
@@ -56,6 +102,8 @@ const LoginScreen = () => {
                     onFocus={() => setFocusedInput('email')}
                     onBlur={() => setFocusedInput(null)}
                     value={email}
+                    keyboardType="email-address"
+                    autoCapitalize="none"
                     onChangeText={setEmail}
                     placeholder="Адреса електронної пошти"
                   ></TextInput>
@@ -73,7 +121,7 @@ const LoginScreen = () => {
                       value={password}
                       onChangeText={setPassword}
                       placeholder="Пароль"
-                      secureTextEntry={!showPassword}
+                      secureTextEntry={true}
                     ></TextInput>
 
                     <TouchableOpacity
@@ -89,18 +137,16 @@ const LoginScreen = () => {
 
                 <TouchableOpacity
                   style={styles.btnRegister}
-                  onPress={handleLogin}
+                  onPress={handleRegister}
                 >
-                  <Text style={styles.btnRegisterText}>Увійти</Text>
+                  <Text style={styles.btnRegisterText}>Зареєструватися</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
                   style={styles.btnLogin}
-                  onPress={() => navigation.navigate('RegistrationScreen')}
+                  // onPress={() => navigation.navigate('LoginScreen')}
                 >
-                  <Text style={styles.btnLoginText}>
-                    Немає аккаунту? Зареєструватися
-                  </Text>
+                  <Text style={styles.btnLoginText}>Вже є аккаунт? Увійти</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -135,7 +181,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderTopRightRadius: 25,
     borderTopLeftRadius: 25,
-    paddingBottom: 111,
+
+    paddingBottom: 78,
   },
 
   avatarBox: {
@@ -231,7 +278,6 @@ const styles = StyleSheet.create({
 
   btnLogin: {
     marginTop: 16,
-    marginBottom: 45,
   },
 
   btnLoginText: {
@@ -250,4 +296,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default LoginScreen;
+export default RegistrationScreen;
