@@ -73,7 +73,8 @@ const LoginScreen = () => {
                       value={password}
                       onChangeText={setPassword}
                       placeholder="Пароль"
-                      secureTextEntry={!showPassword}
+                      secureTextEntry={true}
+                      autoCapitalize="none"
                     ></TextInput>
 
                     <TouchableOpacity
