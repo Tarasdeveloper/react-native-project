@@ -122,6 +122,7 @@ const RegistrationScreen = () => {
                       onChangeText={setPassword}
                       placeholder="Пароль"
                       secureTextEntry={true}
+                      autoCapitalize="none"
                     ></TextInput>
 
                     <TouchableOpacity
